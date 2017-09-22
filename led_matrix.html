@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LED Matrix</title>
+<style>
+
+#ledMatrix {
+   width: 270px;
+   height: 192px;
+   padding: 16px;
+   -webkit-border-radius:8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
+   background: #C0C0C0;
+}
+.Table {
+   display: table;
+   margin: 2px;
+}
+.Row {
+   display: table-row;
+}
+.Cell {
+   display: table-cell;
+}
+.Color {
+   width: 20px;
+   height: 20px;
+   margin: 2px;
+}
+.Circle {
+   width: 16px;
+   height: 16px;
+   margin: 8px;
+   -webkit-border-radius: 8px;
+   -moz-border-radius: 8px;
+   border-radius: 8px;
+   background: #333;
+}
+</style>
+</head>
+<body>
+<h1>LED Matrix</h1>
+<div class="Table">
+<div class="Row">
+<div class="Cell">
+<div class="Cell">
+<div id="ledMatrix" class="Table"></div>
+</div>
+</div>
+</div>
+<div id="dataOutput"></div>
+<div id="txtResponse"></div>
+<div>
+<form id="form">
+  Enter Text: <input id = "userText" type="text" name="fname"><br>
+</form>
+</div>
+
+<div>
+<button id="btnData">send text</button>
+</div>
+
+<script src="https://cdn.pubnub.com/pubnub-3.7.10.js"></script>
+
+<script>
+var hexCode = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+var w = 8;
+var h = 10;
+var colorMin = 3;
+var colorMax = 15;
+var xhr;
+var text = "";
+
+function setColor(e) {
+   e.style.backgroundColor = "#FFF"
+}
+
+function removeColor(e)
+{
+   e.style.backgroundColor = "#000";
+}
+
+
+var lm = document.getElementById("ledMatrix");
+var dotHtml = "";
+for (var i = 0; i < (h * w); i++) {
+   if ((i % w) == 0) dotHtml += '<div calss="Row">';
+   dotHtml += '<div class="Cell"><div class="Circle" id="dot_' + i + '" title="' + i + '" switch= "0"></div></div>';
+   if ((i % w) == (w - 1)) dotHtml += '</div>';
+}
+lm.innerHTML = dotHtml;
+for (var i = 0; i < (h * w); i++) {
+   var d = document.getElementById("dot_" + i);
+   d.addEventListener("click", function(e) {
+
+      if(e.srcElement.getAttribute("switch") == "0")
+      {
+         e.srcElement.setAttribute("switch", "1"); 
+         text += e.srcElement.getAttribute("title") + "/"; 
+         var o = document.getElementById("dataOutput");
+         //text = text + "adding " + e.srcElement.getAttribute("switch") + "%"
+         o.innerHTML = text
+         setColor(e.srcElement);
+      }
+      else
+      {
+         e.srcElement.setAttribute("switch", "0"); 
+         text = text.replace(e.srcElement.getAttribute("title") + "/" , "")
+         if(text.length == 0)
+         {
+            text = "/";
+         }
+         removeColor(e.srcElement);
+      }  
+
+
+      (function() {
+      
+      var channel = 'led-matrix';
+      // Init - Get your own keys at admin.pubnub.com
+      var p = PUBNUB.init({
+         subscribe_key: 'sub-c-dbe312e4-896d-11e7-99f6-f65693608d5b',
+         publish_key:   'pub-c-9eea524c-18c5-41ae-a88e-3329adee616c',
+         ssl:true
+      });
+      function sendData() {
+
+      var o = document.getElementById("dataOutput");
+      //o.innerHTML = text;
+
+       p.publish({
+         channel : channel, 
+         message : 'a' +  text + '\n'
+       });
+     }
+      
+     sendData()
+     //button.addEventListener('click', sendData);
+       
+   })();
+
+   });
+}
+
+
+
+(function() {
+   // DOM
+   var button1 = document.getElementById("btnData");
+   // This is the channel name you are subscribing in Main.py
+   var channel = 'led-matrix';
+   // Init - Get your own keys at admin.pubnub.com
+   var p = PUBNUB.init({
+      subscribe_key: 'sub-c-dbe312e4-896d-11e7-99f6-f65693608d5b',
+      publish_key:   'pub-c-9eea524c-18c5-41ae-a88e-3329adee616c',
+      ssl:true
+   });
+   // Sending data
+   function senddata() {
+
+      var form = document.getElementById('form');
+      var text = document.getElementById('userText');
+      var variable = text.value + '\n';
+
+      var o = document.getElementById("dataOutput");
+      //o.innerHTML = variable;
+
+    p.publish({
+      channel : channel, 
+      message : variable
+    });
+  }
+    // Click event
+   button1.addEventListener('click', senddata);
+})();
+
+
+</script>
+</body>
+</html>
