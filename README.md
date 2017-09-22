@@ -11,3 +11,6 @@ STEPS TO RUN THE CODE : -
 4. Run the communication.py file (python communication.py in command prompt)
 5. Edit the index.html file (publish key and subscribe key from pubnub)
 6. Host the site online or open it in your browser and run it locally
+
+
+Visit https://chandni97.github.io/IOT-LED/led_matrix.html to view the html file
