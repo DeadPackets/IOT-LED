@@ -10,8 +10,8 @@ from pubnub.pubnub import PubNub
 from pubnub.enums import PNOperationType, PNStatusCategory
 
 pnconfig = PNConfiguration() 
-pnconfig.subscribe_key = 'sub-c-dbe312e4-896d-11e7-99f6-f65693608d5b'
-pnconfig.publish_key = 'pub-c-9eea524c-18c5-41ae-a88e-3329adee616c' 
+pnconfig.subscribe_key = 'sub-c-43003980-a038-11e7-8751-e66010d856a3'
+pnconfig.publish_key = 'pub-c-da06a2e0-36cd-4fad-9fa6-9e663a9c3caf' 
 pubnub = PubNub(pnconfig)
 channel = 'led-matrix'
 
