@@ -13,4 +13,4 @@ STEPS TO RUN THE CODE : -
 6. Host the site online or open it in your browser and run it locally
 
 
-Visit https://chandni97.github.io/IOT-LED/led_matrix.html to view the html file
+Visit https://deadpackets.github.io/IOT-LED/led_matrix.html to view the html file
